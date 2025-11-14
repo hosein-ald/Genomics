@@ -1,7 +1,27 @@
-cd data/fastq
+
 # if you do not have wget 
 # conda install wget 
 wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR181/007/SRR1810907/SRR1810907.fastq.gz
 wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR181/008/SRR1810918/SRR1810918.fastq.gz
 wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR181/000/SRR1810900/SRR1810900.fastq.gz
 wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR181/002/SRR1810912/SRR1810912.fastq.gz
+
+I downloaded fastq files with IDM because of better download speed.
+
+
+#Rename files
+mv SRR1810907.fastq.gz TAZ.fastq.gz
+mv SRR1810900.fastq.gz YAP.fastq.gz
+mv SRR1810918.fastq.gz TEAD4.fastq.gz
+mv SRR1810912.fastq.gz IgG.fastq.gz
+
+#Creating and activating Conda env
+conda create -n reproduce_figure fastqc -c bioconda
+conda activate reproduce_figure
+
+#QC for all the files
+for fq in *fastq.gz
+do
+  fastqc $fq
+done
+
