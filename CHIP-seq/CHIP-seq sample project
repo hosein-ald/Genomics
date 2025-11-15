@@ -25,3 +25,60 @@ do
   fastqc $fq
 done
 
+
+# Next is the alignment which I chose the bowtie2 method because of speed and considering my length of sequecing which is 50, I downloaded "GRCh38_noalt_as.zip" as the index file.
+#Installing bowtie2
+conda install libcxx -c conda-forge
+conda install bowtie2 -c bioconda
+
+#alignment
+bowtie2 -x reference/GRCh38_noalt_as/GRCh38_noalt_as -U fastq/YAP.fastq.gz -S fastq/YAP1.sam --threads 8  --no-mixed --no-discordant -k 1
+
+#result of alignment
+24549590 reads; of these:
+  24549590 (100.00%) were unpaired; of these:
+    895629 (3.65%) aligned 0 times
+    23653961 (96.35%) aligned exactly 1 time
+    0 (0.00%) aligned >1 times
+96.35% overall alignment rate
+
+
+#I use a loop to do the alignment for all the files
+
+for fq in fastq/*fastq.gz
+do
+  bowtie2 -x reference/GRCh38_noalt_as/GRCh38_noalt_as -U $fq -S ${fq/fastq.gz/sam} --threads 8  --no-mixed --no-discordant -k 1
+done
+
+
+#Convert sam files to bam format usinf samtools (we can remove the sam files after this step to save some space)
+for sam in fastq/*sam
+do
+  samtools view -bS $sam > ${sam/sam/bam}
+done
+
+#sort the reads in the bam file by coordinates.
+
+for bam in fastq/*bam
+do
+  samtools sort -@ 4 -o ${bam/bam/sorted.bam} $bam
+done
+
+
+# remove all the unsorted bam 
+ls fastq/*bam | grep -v sorted.bam | xargs rm
+Always test the command for a single sample and then apply it to all samples after you confirm it works.
+
+#Why Sort a BAM File?
+#Efficient Retrieval by Genomic Coordinates:
+#Sorting arranges the reads in the BAM file by their genomic coordinates (e.g., by chromosome and position). This is crucial for downstream tools (e.g., variant calling, visualization) that rely on efficient access to reads aligned to specific regions. Compatibility with Analysis Tools:
+#Many tools require sorted BAM files as input because they process data regionally (e.g., calling peaks or calculating coverage).
+
+
+
+#Indexinf the bam files
+
+for bam in fastq/*sorted.bam
+do 
+  samtools index $bam
+done
