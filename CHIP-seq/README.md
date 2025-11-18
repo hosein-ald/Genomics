@@ -35,4 +35,55 @@ All datasets were aligned, filtered, and processed into the following key files:
 
 .bw (normalized tracks for IGV visualization)
 
-.narrowPeak (MACS2 peak calls)
+Example MACS3 call:
+
+```bash
+macs3 callpeak -t <IP>.sorted.bam \
+  -c IgG.sorted.bam \
+  -f BAM \
+  -n <sample_name>
+```
+
+##3. Pipeline Summary
+3.1 Alignment
+```bash
+bowtie2 -x hg38 \
+  -1 sample_R1.fq.gz -2 sample_R2.fq.gz \
+  | samtools sort -o sample.sorted.bam
+samtools index sample.sorted.bam
+```
+
+##3.2 Peak Calling
+```bash
+macs3 callpeak -t sample.sorted.bam \
+  -c IgG.sorted.bam \
+  -n sample \
+  -f BAM
+```
+
+##3.3 BigWig Generation
+```bash
+bamCoverage -b sample.sorted.bam \
+  -o sample.bw \
+  --normalizeUsing RPKM
+```
+
+##3.4 Heatmaps (deepTools)
+```bash
+computeMatrix reference-point \
+  -S YAP.bw TAZ.bw TEAD4.bw \
+  -R peaks.bed \
+  --referencePoint center \
+  -b 3000 -a 3000 \
+  -o matrix.gz
+
+plotHeatmap -m matrix.gz -o figures/heatmap.png
+```
+
+##3.5 R / ggplot2 Analysis
+
+All downstream analyses (TSS distance classification, summit distance distribution, scatter plots, and Venn diagrams) were performed in R and are available in:
+
+scripts/04_R_analysis.R
+
+notebooks/YAP_TAZ_TEAD4_reproduction.ipynb
