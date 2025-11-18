@@ -87,3 +87,93 @@ All downstream analyses (TSS distance classification, summit distance distributi
 scripts/04_R_analysis.R
 
 notebooks/YAP_TAZ_TEAD4_reproduction.ipynb
+
+4. Reproduced Figures (Overview)
+
+All figure PNGs are stored in figures/.
+
+Heatmap of ChIP-seq signal around peak summits
+
+File: heatmap.png
+
+YAP1, TAZ, and TEAD4 signal over ±1–3 kb around peak centers
+
+Separate panels for promoters vs enhancers
+
+Genomic partition of shared YAP/TAZ/TEAD4 peaks
+
+File: pichart_with_percentage.png
+
+Pie chart of promoters, active enhancers, inactive enhancers, unclassified
+
+IGV snapshot of a representative locus (e.g. CCN2/CTGF)
+
+File: Screenshot_2025-11-17_at_13.09.53.png
+
+BigWig tracks for YAP, TAZ, TEAD4, IgG; narrowPeak beds shown below
+
+Distance to summit distribution
+
+File: distance_to_the_summit_of_TAZ_peaks.png
+
+Histogram/density of read positions relative to TAZ peak summits
+
+Distance to TSS classification
+
+File: Distance_to_TSS.png
+
+Stacked bar plot with categories <1 kb, 1–10 kb, 10–100 kb, >100 kb
+
+Signal correlations
+
+Files:
+
+TAZ_TEAD4_Splot.png
+
+YAP1_TEAD4_Splot.png
+
+YAP-TEAD4_plot1.png
+
+Scatter plots of ChIP-seq signal at shared peaks with regression lines and R²
+
+Peak overlap Venn diagrams
+
+Files:
+
+TEAD4_YAPTAZ.png (YAP/TAZ combined vs TEAD4)
+
+YAP_TAZ.png (YAP vs TAZ)
+
+5. Biological Conclusions
+
+From these reproduced analyses, I confirm key conclusions from Zanconato et al.:
+
+YAP1, TAZ, and TEAD4 show sharp, centered enrichment at shared peak summits.
+
+The majority of shared binding sites fall within active enhancer regions, not promoters.
+
+Most peaks are distal to TSSs (1–10 kb and 10–100 kb), consistent with enhancer targeting.
+
+There is strong correlation of signal intensity between TEAD4 and YAP/TAZ at shared peaks (R² ~ 0.66–0.67).
+
+Venn diagrams show substantial overlap between YAP, TAZ, and TEAD4 peaks, supporting cooperative enhancer regulation.
+
+6. Repository Structure
+
+Suggested layout (what I used):
+├── data/
+│   ├── bam/
+│   ├── bigwig/
+│   ├── peaks/
+│   └── annotations/
+├── figures/
+│   ├── heatmap.png
+│   ├── pichart_with_percentage.png
+│   ├── ...
+│   └── YAP1_TEAD4_Splot.png
+├── scripts/
+│   ├── 01_alignment.sh
+│   ├── 02_peakcalling.sh
+│   ├── 03_make_bigwig.sh
+│   └── 04_R_analysis.R
+└── README.md
