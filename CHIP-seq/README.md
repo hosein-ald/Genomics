@@ -1,47 +1,39 @@
-# Reproducible ChIP-seq Analysis of YAP1, TAZ, and TEAD4  
-### Reproducing Figures from *Zanconato et al., Cell* (2018) via CrazyHotTommy’s Tutorial
+Reproducible ChIP-seq Analysis of YAP1, TAZ, and TEAD4
+Reproducing Figures from Zanconato et al., Cell (2018) — Using CrazyHotTommy’s Tutorial
+1. Project Overview
 
----
+This repository documents my full attempt to reproduce Figure 1 and related analyses from the paper:
 
-## 1. Project Overview
+Zanconato et al. (2018)
+YAP/TAZ–TEAD and AP-1 Cooperate to Control Oncogenic Enhancers in Cancer Cells
+Link (Original Article): https://pmc.ncbi.nlm.nih.gov/articles/PMC6186417/
 
-This repository documents my attempt to **reproduce Figure 1 and related analyses** from:
+I followed (and adapted) the excellent reproducible-analysis workflow provided by:
 
-**Original article (paper)**  
-Zanconato et al., 2018  
-*YAP/TAZ–TEAD and AP-1 Cooperate to Control Oncogenic Enhancers in Cancer Cells*  
-PMC link: https://pmc.ncbi.nlm.nih.gov/articles/PMC6186417/
+CrazyHotTommy Reproducible Genomics Tutorial
+Link (Tutorial): https://crazyhottommy.github.io/reproduce_genomics_paper_figures/index.html
 
-The analysis is guided by the excellent reproducible genomics tutorial:
+This tutorial is the guide, and the PMC article is the original study whose figures are being reproduced.
 
-**Tutorial (workflow guide)**  
-CrazyHotTommy – *Reproduce genomics paper figures*  
-https://crazyhottommy.github.io/reproduce_genomics_paper_figures/index.html
+My reproduced versions of the figures—including heatmaps, enhancer/promoter partitions, distance-to-summit distributions, peak overlap Venn diagrams, IGV snapshots, and ChIP-seq signal correlations—are all included in this repository.
 
-The tutorial is the **step-by-step pipeline**, while the PMC article is the **original biological study** whose figures I reproduced.
+2. Data Used
 
-This repo contains:
+I used the ChIP-seq datasets described in the tutorial and paper, focusing on:
 
-- All the **R / shell scripts** used for processing and plotting  
-- A **Jupyter notebook** with narrative explanations  
-- Exported **figures** closely matching those in the original paper
+YAP1 ChIP-seq
 
----
+TAZ ChIP-seq
 
-## 2. Data
+TEAD4 ChIP-seq
 
-I used the ChIP-seq datasets described in the paper and tutorial, focusing on:
+IgG control
 
-- **YAP1 ChIP-seq**
-- **TAZ ChIP-seq**
-- **TEAD4 ChIP-seq**
-- **IgG control**
+All datasets were aligned, filtered, and processed into the following key files:
 
-Key derived files:
+.bam (aligned reads)
 
-- `*.sorted.bam` – aligned, sorted reads (Bowtie2 + samtools)  
-- `*.narrowPeak` – peak calls (MACS3)  
-- `*.bw` – normalized signal tracks (deepTools `bamCoverage`)
+.bw (normalized tracks for IGV visualization)
 
 Example MACS3 call:
 
