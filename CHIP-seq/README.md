@@ -44,7 +44,7 @@ macs3 callpeak -t <IP>.sorted.bam \
   -n <sample_name>
 ```
 
-##3. Pipeline Summary
+3. Pipeline Summary
 3.1 Alignment
 ```bash
 bowtie2 -x hg38 \
@@ -53,7 +53,7 @@ bowtie2 -x hg38 \
 samtools index sample.sorted.bam
 ```
 
-##3.2 Peak Calling
+3.2 Peak Calling
 ```bash
 macs3 callpeak -t sample.sorted.bam \
   -c IgG.sorted.bam \
@@ -61,14 +61,14 @@ macs3 callpeak -t sample.sorted.bam \
   -f BAM
 ```
 
-##3.3 BigWig Generation
+3.3 BigWig Generation
 ```bash
 bamCoverage -b sample.sorted.bam \
   -o sample.bw \
   --normalizeUsing RPKM
 ```
 
-##3.4 Heatmaps (deepTools)
+3.4 Heatmaps (deepTools)
 ```bash
 computeMatrix reference-point \
   -S YAP.bw TAZ.bw TEAD4.bw \
@@ -80,7 +80,7 @@ computeMatrix reference-point \
 plotHeatmap -m matrix.gz -o figures/heatmap.png
 ```
 
-##3.5 R / ggplot2 Analysis
+3.5 R / ggplot2 Analysis
 
 All downstream analyses (TSS distance classification, summit distance distribution, scatter plots, and Venn diagrams) were performed in R and are available in:
 
