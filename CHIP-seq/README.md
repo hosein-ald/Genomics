@@ -160,7 +160,7 @@ Venn diagrams show substantial overlap between YAP, TAZ, and TEAD4 peaks, suppor
 
 6. Repository Structure
 
-Suggested layout (what I used):
+```bash
 ├── data/
 │   ├── bam/
 │   ├── bigwig/
@@ -169,11 +169,20 @@ Suggested layout (what I used):
 ├── figures/
 │   ├── heatmap.png
 │   ├── pichart_with_percentage.png
-│   ├── ...
+│   ├── Screenshot_2025-11-17_at_13.09.53.png
+│   ├── distance_to_the_summit_of_TAZ_peaks.png
+│   ├── Distance_to_TSS.png
+│   ├── TAZ_TEAD4_Splot.png
+│   ├── TEAD4_YAPTAZ.png
+│   ├── YAP_TAZ.png
+│   ├── YAP-TEAD4_plot1.png
 │   └── YAP1_TEAD4_Splot.png
+├── notebooks/
+│   └── YAP_TAZ_TEAD4_reproduction.ipynb
 ├── scripts/
 │   ├── 01_alignment.sh
 │   ├── 02_peakcalling.sh
 │   ├── 03_make_bigwig.sh
 │   └── 04_R_analysis.R
 └── README.md
+```
