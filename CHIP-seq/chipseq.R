@@ -6,6 +6,8 @@ library(readr)
 library(ggpmisc)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(GenomicFeatures)
+library(EnrichedHeatmap)
+
 
 TAZ_peaks=import(here("/Users/hossein.allahdadi/Downloads/data/fastq/TAZ_peak/TAZ_peaks.narrowPeak"))
 YAP_peaks=import(here("/Users/hossein.allahdadi/Downloads/data/fastq/YAP_peak/YAP_peaks.narrowPeak"))
@@ -274,7 +276,7 @@ H3K27ac<- import(here("/Users/hossein.allahdadi/Downloads/data/GSE49561/H3K27Ac.
 active_enhancers<- subsetByOverlaps(H3K4me1, H3K27ac)
 inactive_enhancers<- subsetByOverlaps(H3K4me1, H3K27ac, invert=TRUE)
 promoters<- subsetByOverlaps(H3K4me3, H3K4me1, invert=TRUE)
-
+enhancers<- subsetByOverlaps(H3K4me1, H3K4me3, invert=TRUE)
 
 
 n_active_enhancers<- subsetByOverlaps(YAP_overlap_TAZ_peaks_overlap_TEAD4,
@@ -347,4 +349,68 @@ ggplot(annotation_df, aes(x = "", y = peak_number, fill = category)) +
 
 
 
+#############
+#Fig heatmap
+#############
+
+#annotate the YAP1/TAZ/TEAD4 peaks:
+YAP1_enhancers<- subsetByOverlaps(YAP_overlap_TAZ_peaks_overlap_TEAD4, enhancers) 
+YAP1_promoters<- subsetByOverlaps(YAP_overlap_TAZ_peaks_overlap_TEAD4, promoters) 
+YAP1_enhancers$name %>% head()
+
+YAP_summit<- import(here("/Users/hossein.allahdadi/Downloads/data/fastq/YAP_peak/YAP_summits.bed"))
+YAP_summit
+
+YAP_summit_enhancer<- YAP_summit[YAP_summit$name %in% YAP1_enhancers$name]
+YAP_summit_promoter<- YAP_summit[YAP_summit$name %in% YAP1_promoters$name]
+
+# combine them
+anchors<- c(YAP_summit_promoter, YAP_summit_enhancer) 
+
+
+#We need to import the bigwig files
+YAP1_bw<- import(here("/Users/hossein.allahdadi/Downloads/data/fastq/YAP.bw"))
+TAZ_bw<- import(here("/Users/hossein.allahdadi/Downloads/data/fastq/TAZ.bw"))
+TEAD4_bw<- import(here("/Users/hossein.allahdadi/Downloads/data/fastq/TEAD4.bw"))
+
+# it is a GRanges object
+YAP1_bw
+
+
+#Now, quantify the the signal in the bins
+
+library(EnrichedHeatmap)
+# extend 1000 bp on each side and use 50bp bin
+mat1<- normalizeToMatrix(YAP1_bw, anchors, value_column = "score",
+                         extend= 1000, mean_mode = "w0", w=50)
+
+mat2<- normalizeToMatrix(TAZ_bw, anchors, value_column = "score",
+                         extend= 1000, mean_mode = "w0", w=50)
+
+mat3<- normalizeToMatrix(TEAD4_bw, anchors, value_column = "score",
+                         extend= 1000, mean_mode = "w0", w=50)
+dim(mat1)
+
+#color pallete ,mapping white to red from 0 to 20. any value that is above 20 will be mapped to red too.
+col_fun<- circlize::colorRamp2(c(0, 20), c("white", "red"))
+
+
+# drawing an info-bar to separate the promoters and enhancers
+partition<- c(rep("promoters", length(YAP1_promoters)),
+              rep("enhancers", length(YAP1_enhancers)))
+# change the factor level so promoters come first
+partition<- factor(partition, levels=c("promoters", "enhancers"))
+partition_hp<- Heatmap(partition, col=structure(2:3, names = c("promoters", "enhancers")), 
+                       name = "partition",
+                       show_row_names = FALSE, width=unit(3,'mm'))
+partition_hp
+
+
+#drawing heatmaps including info-bar
+ht_list<- partition_hp +
+  EnrichedHeatmap(mat1, pos_line = FALSE, column_title="YAP1", name = "YAP1", col=col_fun) +
+  EnrichedHeatmap(mat2, pos_line = FALSE, column_title="TAZ", name = "TAZ", col=col_fun) +
+  EnrichedHeatmap(mat3, pos_line = FALSE, column_title="TEAD4", name = "TEAD4", col=col_fun)
+
+draw(ht_list, split= partition, main_heatmap =2)
 
