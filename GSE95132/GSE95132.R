@@ -185,6 +185,13 @@ to_bed0based <- function(df, label) {
   )
 }
 
+# End-corrected BED frames used by g4_methylation_rnaseq_integration_clean.R
+hyper_bed_new <- to_bed0based(meth_hyper_10, "hyper")
+hyper_bed_new$end <- hyper_bed_new$end + 1L
+
+hypo_bed_new  <- to_bed0based(meth_hypo_10,  "hypo")
+hypo_bed_new$end  <- hypo_bed_new$end  + 1L
+             
 # Save 5% threshold BED files (primary output)
 write.table(to_bed0based(meth_hyper_5, "hyper"),
             file.path(bed_dir, "hyper_GSE95656_strict_5.bed"),
